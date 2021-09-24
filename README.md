@@ -67,3 +67,45 @@ for element in a.iter() {
   println!("the value is {}", element);
 }
 ```
+
+### 所有権
+所有権を有する変数がスコープ外となる際にdropが呼ばれる。
+プリミティブ型でない場合、変数へ代入すると代入元から代入先へ所有権が移行する。
+以下のコードはs1からs2に所有権が移行している(ムーブ)しているため、移行後にs1を利用することはできない。
+```rust
+let s1 = String::from("hello");
+let s2 = s1;
+
+println!("{}, world!", s1); //ここでs1は利用できない
+
+// cloneでdeep copyすればOK
+let s1 = String::from("hello");
+let s2 = s1.clone();
+
+println!("s1 = {}, s2 = {}", s1, s2);
+```
+
+関数の引数として渡す場合も所有権が移行する。
+```&```をつけて参照を渡すと所有権を移行させずにすむ。
+※関数の引数に参照を取ることを「借用」という。
+```rust
+let s1 = String::from("test");
+let s2 = calculate_length1(s1);
+println!("{}", s2);
+println!("{}", s1); // s1はs2にムーブしてるためコンパイルエラーとなる
+
+let s3 = String::from("test");
+let s4 = calculate_length2(&s3);
+println!("{}", s4);
+println!("{}", s3); // 参照を渡しておりムーブしていないのでコンパイルエラーとならない
+
+fn calculate_length1(s: String) -> usize {
+    s.len()
+}
+
+// 参照を取る(ムーブしない)
+fn calculate_length2(s: &String) -> usize {
+    s.len()
+    // s.push_str("aaa") など参照は書き換えることはできない
+}
+```

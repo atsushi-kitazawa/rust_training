@@ -36,8 +36,14 @@ fn main() {
     }
 
     test_function(10);
+    let result = add(10, 20);
+    println!("Result of add function {}", result);
 }
 
 fn test_function(x: i32) {
     println!("The value of x is {}", x);
+}
+
+fn add(x: i32, y: i32) -> i32 {
+    return x + y;
 }
